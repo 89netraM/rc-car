@@ -1,7 +1,10 @@
-$dockerfilePath = Join-Path $PSScriptRoot "Dockerfile.publish";
+$dockerfilePath = Join-Path $PSScriptRoot "publish.containerfile";
 $outputPath = Join-Path $PSScriptRoot "release";
 
 podman build --tag rc-car-publish --file $dockerfilePath $PSScriptRoot;
+if (-not $?) {
+    return;
+}
 
 $containerId = podman create rc-car-publish;
 
