@@ -1,0 +1,14 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+  <!-- Build -->
+  <ItemGroup>
+    <GlobalPackageReference Include="CSharpier.MsBuild" Version="1.0.2" />
+  </ItemGroup>
+  <!-- Dependencies -->
+  <ItemGroup>
+    <PackageVersion Include="Iot.Device.Bindings" Version="4.0.1" />
+    <PackageVersion Include="System.Device.Gpio" Version="4.0.1" />
+  </ItemGroup>
+</Project>
