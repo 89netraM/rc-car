@@ -90,7 +90,7 @@ public sealed class CameraService(ILogger<CameraService> logger, IOptions<Camera
 
     private Process? StartCameraProcess()
     {
-        var arguments = new List<string> { "--output", "-", "--codec", "mjpeg", "--timeout", "0" };
+        var arguments = new List<string> { "--output", "-", "--codec", "mjpeg", "--nopreview", "--timeout", "0" };
 
         if (options.Value.Height is not 0)
         {
