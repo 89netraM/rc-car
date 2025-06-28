@@ -11,6 +11,9 @@ builder.Services.AddCamera();
 
 var app = builder.Build();
 
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
 app.MapGet(
     "/camera",
     async ([FromServices] CameraService cameraService, HttpContext context, CancellationToken cancellationToken) =>
