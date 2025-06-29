@@ -12,11 +12,15 @@ main {
   display: grid;
   width: 100vw;
   height: 100vh;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: 1fr;
+  grid-template-areas: "center acceleration";
 
   .camera {
     justify-self: stretch;
     align-self: stretch;
     overflow: hidden;
+    grid-area: center-start / center-start / acceleration-end / acceleration-end;
 
     img {
       display: block;
@@ -32,5 +36,47 @@ main {
     input {
       display: none;
     }
+  }
+
+  #acceleration {
+    grid-area: acceleration;
+    align-self: center;
+    writing-mode: vertical-lr;
+    direction: rtl;
+    margin: 4rem 2rem;
+    height: 100%;
+    max-height: 5cm;
+  }
+}
+
+input[type="range"].controller {
+  background-color: transparent;
+  -webkit-appearance: none;
+
+  &::-webkit-slider-runnable-track {
+    background: #333333;
+    border: 0.25rem solid #333333;
+    border-radius: 50cqw;
+    -webkit-appearance: none;
+  }
+  &::-moz-range-track {
+    background: #333333;
+    border: 0.25rem solid #333333;
+    border-radius: 50cqw;
+  }
+  &::-webkit-slider-thumb {
+    width: 1rem;
+    aspect-ratio: 1;
+    background: #ffffff;
+    border: none;
+    border-radius: 0.5rem;
+    -webkit-appearance: none;
+  }
+  &::-moz-range-thumb {
+    width: 1rem;
+    aspect-ratio: 1;
+    background: #ffffff;
+    border: none;
+    border-radius: 0.5rem;
   }
 }
