@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -122,20 +123,26 @@ public sealed class CameraService(ILogger<CameraService> logger, IOptions<Camera
         );
     }
 
-    private async Task CameraLoop(Process process, CancellationToken cancellationToken)
+    private void CameraLoop(Process process, CancellationToken cancellationToken)
     {
         try
         {
-            while (ReadNextJPEGFrame(process.StandardOutput.BaseStream) is byte[] frame)
+            foreach (var frame in ReadNextJPEGFrame(process.StandardOutput.BaseStream, cancellationToken))
             {
-                if (cancellationToken.IsCancellationRequested)
+                foreach (var channel in channels.Values)
                 {
-                    return;
+                    var didWrite = channel.Writer.TryWrite(frame);
+                    if (!didWrite)
+                    {
+                        logger.LogWarning("Failed writing frame to channel");
+                    }
                 }
-                await Task.WhenAll(channels.Values.Select(c => c.Writer.WriteAsync(frame, cancellationToken).AsTask()));
             }
 
-            logger.LogInformation("Camera stream ended");
+            if (!cancellationToken.IsCancellationRequested)
+            {
+                logger.LogInformation("Camera stream ended");
+            }
         }
         finally
         {
@@ -145,43 +152,68 @@ public sealed class CameraService(ILogger<CameraService> logger, IOptions<Camera
             }
             process.Dispose();
         }
+    }
 
-        static byte[]? ReadNextJPEGFrame(Stream stream)
+    private IEnumerable<ReadOnlyMemory<byte>> ReadNextJPEGFrame(Stream stream, CancellationToken cancellationToken)
+    {
+        ReadOnlyMemory<byte> startSequence = new byte[] { 0xFF, 0xD8 };
+        ReadOnlyMemory<byte> endSequence = new byte[] { 0xFF, 0xD9 };
+
+        var memoryOwner = MemoryPool<byte>.Shared.Rent(options.Value.InitialBufferSize);
+
+        try
         {
-            using var ms = new MemoryStream();
-            bool insideFrame = false;
-
-            int prev = -1;
-            while (true)
+            var isInside = false;
+            int position = 0;
+            while (!cancellationToken.IsCancellationRequested)
             {
-                int b = stream.ReadByte();
-                if (b is -1)
+                if (memoryOwner.Memory[position..].IsEmpty)
                 {
-                    break;
+                    var newLength = (int)double.Ceiling(memoryOwner.Memory.Length * 1.5);
+                    logger.LogDebug(
+                        "Ran out of memory, increasing from {CurrentLength} bytes to {AskedForLength} bytes",
+                        memoryOwner.Memory.Length,
+                        newLength
+                    );
+                    var newMemoryOwner = MemoryPool<byte>.Shared.Rent(newLength);
+                    logger.LogDebug("Received new memory, {NewLength} bytes", newMemoryOwner.Memory.Length);
+                    memoryOwner.Memory.CopyTo(newMemoryOwner.Memory);
+                    memoryOwner.Dispose();
+                    memoryOwner = newMemoryOwner;
                 }
-
-                if (!insideFrame)
+                var bytesRead = stream.Read(memoryOwner.Memory[position..].Span);
+                if (bytesRead is 0)
                 {
-                    if (prev is 0xFF && b is 0xD8)
+                    yield break;
+                }
+                position += bytesRead;
+                if (!isInside)
+                {
+                    var startIndex = memoryOwner.Memory[..position].Span.IndexOf(startSequence.Span);
+                    if (startIndex is not -1)
                     {
-                        insideFrame = true;
-                        ms.WriteByte((byte)prev);
-                        ms.WriteByte((byte)b);
+                        memoryOwner.Memory[startIndex..].CopyTo(memoryOwner.Memory);
+                        position -= startIndex;
+                        isInside = true;
                     }
                 }
-                else
+                if (isInside)
                 {
-                    ms.WriteByte((byte)b);
-                    if (prev is 0xFF && b is 0xD9)
+                    var endIndex = memoryOwner.Memory[..position].Span.IndexOf(endSequence.Span);
+                    if (endIndex is not -1)
                     {
-                        return ms.ToArray();
+                        endIndex += endSequence.Length;
+                        yield return memoryOwner.Memory[..endIndex].ToArray();
+                        memoryOwner.Memory[endIndex..].CopyTo(memoryOwner.Memory);
+                        position -= endIndex;
+                        isInside = false;
                     }
                 }
-
-                prev = b;
             }
-
-            return null;
+        }
+        finally
+        {
+            memoryOwner.Dispose();
         }
     }
 
@@ -244,6 +276,9 @@ public class CameraOptions
 
     public bool VFlip { get; set; }
     public bool HFlip { get; set; }
+
+    [Range(1, int.MaxValue)]
+    public int InitialBufferSize { get; set; } = 12_000;
 
     public bool EmitCameraLogs { get; set; } = false;
 }
