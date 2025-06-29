@@ -43,11 +43,42 @@ main {
   #acceleration {
     grid-area: acceleration;
     align-self: center;
+    justify-self: center;
     writing-mode: vertical-lr;
     direction: rtl;
     margin: 4rem 2rem;
     height: 100%;
+    width: 1rem;
     max-height: 5cm;
+    display: none;
+
+    &:has(+ #input-mode input[value="mobile"]:checked) {
+      display: inline-block;
+    }
+  }
+
+  #input-mode {
+    grid-area: acceleration;
+    align-self: end;
+    justify-self: stretch;
+    width: 5rem;
+    margin-block-end: 2rem;
+    text-align: center;
+    font-size: 150%;
+
+    label {
+      display: none;
+
+      &:has(input[value="gamepad"]:checked) + label,
+      &:has(input[value="mobile"]:checked) + label,
+      &:has(~ label input[value="keyboard"]:checked):has(input[value="gamepad"]) {
+        display: block;
+      }
+
+      input {
+        display: none;
+      }
+    }
   }
 }
 

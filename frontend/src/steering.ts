@@ -1,7 +1,12 @@
+import { isGamepadInputEnabled, isKeyboardInputEnabled, isMobileInputEnabled } from "./inputMode";
+
 const cameraImg = document.querySelector(".camera img") as HTMLImageElement;
 
 let prevSensorSteering: number | null = null;
 window.addEventListener("deviceorientation", e => {
+    if (!isMobileInputEnabled()) {
+        return;
+    }
     if (e.gamma == null || e.beta == null) {
         return;
     }
@@ -42,6 +47,9 @@ window.addEventListener("gamepaddisconnected", e => {
     resetSteering();
 });
 function readGamepads(): void {
+    if (!isGamepadInputEnabled()) {
+        return;
+    }
     for (const gamepad of navigator.getGamepads()) {
         if (gamepad == null) {
             continue;
@@ -69,6 +77,9 @@ let keyboardSteeringLeft = false;
 let keyboardSteeringD = false;
 let keyboardSteeringRight = false;
 window.addEventListener("keydown", e => {
+    if (!isKeyboardInputEnabled()) {
+        return;
+    }
     if (e.repeat) {
         return;
     }
@@ -89,6 +100,9 @@ window.addEventListener("keydown", e => {
     setKeyboardSteering();
 });
 window.addEventListener("keyup", e => {
+    if (!isKeyboardInputEnabled()) {
+        return;
+    }
     switch (e.key) {
         case "a":
             keyboardSteeringA = false;

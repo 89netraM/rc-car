@@ -1,6 +1,18 @@
+import { isGamepadInputEnabled, isKeyboardInputEnabled, isMobileInputEnabled } from "./inputMode";
+
 const accelerationInputElement = document.getElementById("acceleration") as HTMLInputElement;
-accelerationInputElement.addEventListener("input", () => setAcceleration(accelerationInputElement.valueAsNumber));
-accelerationInputElement.addEventListener("change", () => resetAcceleration());
+accelerationInputElement.addEventListener("input", () => {
+    if (!isMobileInputEnabled()) {
+        return;
+    }
+    setAcceleration(accelerationInputElement.valueAsNumber);
+});
+accelerationInputElement.addEventListener("change", () => {
+    if (!isMobileInputEnabled()) {
+        return;
+    }
+    resetAcceleration();
+});
 
 let gamepadLoop: number | null = null;
 const accelerationsByGamepad: { [id: string]: number } = {};
@@ -24,6 +36,9 @@ window.addEventListener("gamepaddisconnected", e => {
     resetAcceleration();
 });
 function readGamepads(): void {
+    if (!isGamepadInputEnabled()) {
+        return;
+    }
     for (const gamepad of navigator.getGamepads()) {
         if (gamepad == null) {
             continue;
@@ -51,6 +66,9 @@ let keyboardAccelerationUp = false;
 let keyboardAccelerationS = false;
 let keyboardAccelerationDown = false;
 window.addEventListener("keydown", e => {
+    if (!isKeyboardInputEnabled()) {
+        return;
+    }
     if (e.repeat) {
         return;
     }
@@ -71,6 +89,9 @@ window.addEventListener("keydown", e => {
     setKeyboardAcceleration();
 });
 window.addEventListener("keyup", e => {
+    if (!isKeyboardInputEnabled()) {
+        return;
+    }
     switch (e.key) {
         case "w":
             keyboardAccelerationW = false;

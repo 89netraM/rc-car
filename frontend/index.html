@@ -12,6 +12,20 @@
         <input type="checkbox">
       </label>
       <input id="acceleration" class="controller" type="range" min="-1" value="0" step="0.01" max="1">
+      <div id="input-mode">
+        <label>
+          <span>⌨️</span>
+          <input alt="Swap to gamepad input" type="radio" name="input-mode" value="gamepad" checked>
+        </label>
+        <label>
+          <span>🎮</span>
+          <input alt="Swap to mobile input" type="radio" name="input-mode" value="mobile">
+        </label>
+        <label>
+          <span>📱</span>
+          <input alt="Swap to keyboard input" type="radio" name="input-mode" value="keyboard">
+        </label>
+      </div>
     </main>
     <script type="module" src="/src/main.ts"></script>
   </body>
