@@ -113,6 +113,8 @@ public sealed class CameraService(ILogger<CameraService> logger, IOptions<Camera
             arguments.Add("--vflip");
         }
 
+        arguments.AddRange(options.Value.AdditionalCameraArgs);
+
         return Process.Start(
             new ProcessStartInfo("rpicam-vid", arguments)
             {
@@ -279,6 +281,8 @@ public class CameraOptions
 
     [Range(1, int.MaxValue)]
     public int InitialBufferSize { get; set; } = 12_000;
+
+    public string[] AdditionalCameraArgs { get; set; } = [];
 
     public bool EmitCameraLogs { get; set; } = false;
 }
