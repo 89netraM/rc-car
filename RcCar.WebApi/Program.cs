@@ -7,6 +7,8 @@ using RcCar.WebApi;
 
 var builder = WebApplication.CreateSlimBuilder(args);
 
+builder.Services.AddControllerHub();
+
 builder.Services.AddCamera();
 
 var app = builder.Build();
@@ -45,5 +47,7 @@ app.MapGet(
         }
     }
 );
+
+app.MapHub<ControllerHub>("/controller");
 
 app.Run();

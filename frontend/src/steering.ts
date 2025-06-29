@@ -1,3 +1,4 @@
+import { sendSteeringToController } from "./controller";
 import { isGamepadInputEnabled, isKeyboardInputEnabled, isMobileInputEnabled } from "./inputMode";
 
 const cameraImg = document.querySelector(".camera img") as HTMLImageElement;
@@ -138,6 +139,5 @@ async function setSteering(steering: number): Promise<void> {
 }
 
 async function sendSteeringValue(steering: number): Promise<void> {
-    // TODO: Implement connection to backend
-    console.log({ steering });
+    await sendSteeringToController(steering);
 }

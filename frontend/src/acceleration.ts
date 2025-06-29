@@ -1,4 +1,5 @@
 import { isGamepadInputEnabled, isKeyboardInputEnabled, isMobileInputEnabled } from "./inputMode";
+import { sendAccelerationToController } from "./controller";
 
 const accelerationInputElement = document.getElementById("acceleration") as HTMLInputElement;
 accelerationInputElement.addEventListener("input", () => {
@@ -128,6 +129,5 @@ async function setAcceleration(acceleration: number): Promise<void> {
 }
 
 async function sendAccelerationValue(acceleration: number): Promise<void> {
-    // TODO: Implement connection to backend
-    console.log({ acceleration });
+    await sendAccelerationToController(acceleration);
 }

@@ -10,7 +10,7 @@ COPY ./RcCar.WebApi/RcCar.WebApi.csproj ./RcCar.WebApi/packages.lock.json ./RcCa
 
 RUN dotnet restore --locked-mode --runtime linux-arm64
 
-COPY ./RcCar.WebApi/Program.cs ./RcCar.WebApi/CameraService.cs ./RcCar.WebApi/appsettings.json ./RcCar.WebApi/
+COPY ./RcCar.WebApi/Program.cs ./RcCar.WebApi/CameraService.cs ./RcCar.WebApi/ControllerHub.cs ./RcCar.WebApi/appsettings.json ./RcCar.WebApi/
 
 WORKDIR /app/RcCar.WebApi
 
