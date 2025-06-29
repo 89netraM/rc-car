@@ -45,6 +45,58 @@ function readGamepad(gamepad: Gamepad): boolean {
     return true;
 }
 
+let keyboardAcceleration = 0;
+let keyboardAccelerationW = false;
+let keyboardAccelerationUp = false;
+let keyboardAccelerationS = false;
+let keyboardAccelerationDown = false;
+window.addEventListener("keydown", e => {
+    if (e.repeat) {
+        return;
+    }
+    switch (e.key) {
+        case "w":
+            keyboardAccelerationW = true;
+            break;
+        case "ArrowUp":
+            keyboardAccelerationUp = true;
+            break;
+        case "s":
+            keyboardAccelerationS = true;
+            break;
+        case "ArrowDown":
+            keyboardAccelerationDown = true;
+            break;
+    }
+    setKeyboardAcceleration();
+});
+window.addEventListener("keyup", e => {
+    switch (e.key) {
+        case "w":
+            keyboardAccelerationW = false;
+            break;
+        case "ArrowUp":
+            keyboardAccelerationUp = false;
+            break;
+        case "s":
+            keyboardAccelerationS = false;
+            break;
+        case "ArrowDown":
+            keyboardAccelerationDown = false;
+            break;
+    }
+    setKeyboardAcceleration();
+});
+function setKeyboardAcceleration(): void {
+    const prevKeyboardAcceleration = keyboardAcceleration;
+    keyboardAcceleration = ((keyboardAccelerationW || keyboardAccelerationUp) ? 1 : 0)
+        + ((keyboardAccelerationS || keyboardAccelerationDown) ? -1 : 0);
+    if (prevKeyboardAcceleration === keyboardAcceleration) {
+        return;
+    }
+    setAcceleration(keyboardAcceleration);
+}
+
 async function resetAcceleration(): Promise<void> {
     await setAcceleration(0);
 }

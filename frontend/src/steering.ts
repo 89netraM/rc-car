@@ -63,6 +63,58 @@ function readGamepad(gamepad: Gamepad): boolean {
     return true;
 }
 
+let keyboardSteering = 0;
+let keyboardSteeringA = false;
+let keyboardSteeringLeft = false;
+let keyboardSteeringD = false;
+let keyboardSteeringRight = false;
+window.addEventListener("keydown", e => {
+    if (e.repeat) {
+        return;
+    }
+    switch (e.key) {
+        case "a":
+            keyboardSteeringA = true;
+            break;
+        case "ArrowLeft":
+            keyboardSteeringLeft = true;
+            break;
+        case "d":
+            keyboardSteeringD = true;
+            break;
+        case "ArrowRight":
+            keyboardSteeringRight = true;
+            break;
+    }
+    setKeyboardSteering();
+});
+window.addEventListener("keyup", e => {
+    switch (e.key) {
+        case "a":
+            keyboardSteeringA = false;
+            break;
+        case "ArrowLeft":
+            keyboardSteeringLeft = false;
+            break;
+        case "d":
+            keyboardSteeringD = false;
+            break;
+        case "ArrowRight":
+            keyboardSteeringRight = false;
+            break;
+    }
+    setKeyboardSteering();
+});
+function setKeyboardSteering(): void {
+    const prevKeyboardSteering = keyboardSteering;
+    keyboardSteering = ((keyboardSteeringA || keyboardSteeringLeft) ? -1 : 0)
+        + ((keyboardSteeringD || keyboardSteeringRight) ? 1 : 0);
+    if (prevKeyboardSteering === keyboardSteering) {
+        return;
+    }
+    setSteering(keyboardSteering);
+}
+
 async function resetSteering(): Promise<void> {
     await setSteering(0);
 }
