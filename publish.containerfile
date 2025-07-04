@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:9.0@sha256:faa2daf2b72cbe787ee1882d9651fa4ef3e938ee56792b8324516f5a448f3abe
+FROM mcr.microsoft.com/dotnet/sdk:9.0@sha256:b768b444028d3c531de90a356836047e48658cd1e26ba07a539a6f1a052a35d9
 
 WORKDIR /app
 
@@ -10,7 +10,7 @@ COPY ./RcCar.WebApi/RcCar.WebApi.csproj ./RcCar.WebApi/packages.lock.json ./RcCa
 
 RUN dotnet restore --locked-mode --runtime linux-arm64
 
-COPY ./RcCar.WebApi/Program.cs ./RcCar.WebApi/CameraService.cs ./RcCar.WebApi/ControllerHub.cs ./RcCar.WebApi/appsettings.json ./RcCar.WebApi/
+COPY ./RcCar.WebApi/*.cs ./RcCar.WebApi/appsettings.json ./RcCar.WebApi/
 
 WORKDIR /app/RcCar.WebApi
 

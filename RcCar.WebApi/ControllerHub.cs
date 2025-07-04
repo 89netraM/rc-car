@@ -1,21 +1,22 @@
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace RcCar.WebApi;
 
-public class ControllerHub(ILogger<ControllerHub> logger) : Hub
+public class ControllerHub(ILogger<ControllerHub> logger, ControllerSettings settings) : Hub
 {
-    public async Task SetAcceleration(SetAccelerationRequest request)
+    public void SetAcceleration(SetAccelerationRequest request)
     {
         logger.LogDebug("Received acceleration {Acceleration} from client", request.Acceleration);
+        settings.Acceleration = request.Acceleration;
     }
 
-    public async Task SetSteering(SetSteeringRequest request)
+    public void SetSteering(SetSteeringRequest request)
     {
         logger.LogDebug("Received steering {Steering} from client", request.Steering);
+        settings.Steering = request.Steering;
     }
 
     public record SetAccelerationRequest(double Acceleration);
