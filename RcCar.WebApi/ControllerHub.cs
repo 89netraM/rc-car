@@ -5,18 +5,18 @@ using Microsoft.Extensions.Logging;
 
 namespace RcCar.WebApi;
 
-public class ControllerHub(ILogger<ControllerHub> logger, ControllerSettings settings) : Hub
+public class ControllerHub(ILogger<ControllerHub> logger, ControllerService controller) : Hub
 {
     public void SetAcceleration(SetAccelerationRequest request)
     {
         logger.LogDebug("Received acceleration {Acceleration} from client", request.Acceleration);
-        settings.Acceleration = request.Acceleration;
+        controller.Acceleration = request.Acceleration;
     }
 
     public void SetSteering(SetSteeringRequest request)
     {
         logger.LogDebug("Received steering {Steering} from client", request.Steering);
-        settings.Steering = request.Steering;
+        controller.Steering = request.Steering;
     }
 
     public record SetAccelerationRequest(double Acceleration);
