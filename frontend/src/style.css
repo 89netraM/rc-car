@@ -124,6 +124,21 @@ main {
     }
   }
 
+  #distance {
+    grid-area: bottom;
+    align-self: end;
+    justify-self: center;
+    width: 10ch;
+    text-align: end;
+    margin-block-end: 2rem;
+    font-variant-numeric: tabular-nums;
+    display: none;
+
+    &::after {
+      content: " cm";
+    }
+  }
+
   #input-mode {
     grid-area: bottom;
     align-self: end;

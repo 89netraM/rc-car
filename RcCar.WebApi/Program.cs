@@ -7,7 +7,7 @@ using RcCar.WebApi;
 
 var builder = WebApplication.CreateSlimBuilder(args);
 
-builder.Services.AddControllerHub().AddControllerService();
+builder.Services.AddControllerHub().AddControllerService().AddDistanceService();
 
 builder.Services.AddCamera();
 

@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace RcCar.WebApi;
 
-public class ControllerHub(ILogger<ControllerHub> logger, ControllerService controller) : Hub
+public class ControllerHub(ILogger<ControllerHub> logger, ControllerService controller) : Hub<IControllerClient>
 {
     public void SetAcceleration(SetAccelerationRequest request)
     {
@@ -41,9 +41,17 @@ public class ControllerHub(ILogger<ControllerHub> logger, ControllerService cont
     public record SetHornRequest(bool Active);
 }
 
+public interface IControllerClient
+{
+    Task UpdateDistance(UpdateDistanceRequest request);
+
+    public record UpdateDistanceRequest(double? Distance);
+}
+
 [JsonSerializable(typeof(ControllerHub.SetAccelerationRequest))]
 [JsonSerializable(typeof(ControllerHub.SetSteeringRequest))]
 [JsonSerializable(typeof(ControllerHub.SetHornRequest))]
+[JsonSerializable(typeof(IControllerClient.UpdateDistanceRequest))]
 public partial class ControllerHubJsonSerializerContext : JsonSerializerContext;
 
 public static class ControllerHubServiceCollectionExtensions

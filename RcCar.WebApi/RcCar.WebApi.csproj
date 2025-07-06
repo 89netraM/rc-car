@@ -9,6 +9,7 @@
     <InvariantGlobalization>true</InvariantGlobalization>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Iot.Device.Bindings" />
     <PackageReference Include="System.Device.Gpio" />
   </ItemGroup>
 </Project>

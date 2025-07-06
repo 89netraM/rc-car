@@ -1,5 +1,6 @@
 import { HubConnectionBuilder } from "@microsoft/signalr";
 import { createAlert } from "./alerts";
+import { updateBackDistance } from "./distance";
 
 const connection = new HubConnectionBuilder()
     .withUrl("/controller")
@@ -18,6 +19,13 @@ connection.onreconnected(_ => {
 });
 connection.onclose(err => {
     createAlert(err?.message ?? "Connection to server closed", null);
+});
+
+connection.on("updateDistance", arg => {
+    if (!("distance" in arg) || !(typeof arg.distance === "number" || arg.distance == null)) {
+        createAlert("Received distance update without numeric distance property.");
+    }
+    updateBackDistance(arg.distance);
 });
 
 connection.start().catch((err: Error) =>{

@@ -8,6 +8,7 @@
   </ItemGroup>
   <!-- Dependencies -->
   <ItemGroup>
+    <PackageVersion Include="Iot.Device.Bindings" Version="4.0.1" />
     <PackageVersion Include="System.Device.Gpio" Version="4.0.1" />
   </ItemGroup>
 </Project>
