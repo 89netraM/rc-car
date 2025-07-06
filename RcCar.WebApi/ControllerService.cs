@@ -51,6 +51,13 @@ public sealed class ControllerService : IDisposable
         horn = gpioController.OpenPin(options.Value.HornPin, PinMode.Output, PinValue.Low);
     }
 
+    public void Reset()
+    {
+        Acceleration = 0.0d;
+        Steering = 0.0d;
+        Horn = false;
+    }
+
     public void Dispose()
     {
         acceleration.Dispose();

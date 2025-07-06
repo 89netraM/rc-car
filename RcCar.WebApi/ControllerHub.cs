@@ -1,4 +1,6 @@
+using System;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -23,6 +25,13 @@ public class ControllerHub(ILogger<ControllerHub> logger, ControllerService cont
     {
         logger.LogDebug("Received horn {Horn} from client", request.Active);
         controller.Horn = request.Active;
+    }
+
+    public override Task OnDisconnectedAsync(Exception? exception)
+    {
+        controller.Reset();
+
+        return base.OnDisconnectedAsync(exception);
     }
 
     public record SetAccelerationRequest(double Acceleration);
