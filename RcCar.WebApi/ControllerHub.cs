@@ -19,13 +19,22 @@ public class ControllerHub(ILogger<ControllerHub> logger, ControllerService cont
         controller.Steering = request.Steering;
     }
 
+    public void SetHorn(SetHornRequest request)
+    {
+        logger.LogDebug("Received horn {Horn} from client", request.Active);
+        controller.Horn = request.Active;
+    }
+
     public record SetAccelerationRequest(double Acceleration);
 
     public record SetSteeringRequest(double Steering);
+
+    public record SetHornRequest(bool Active);
 }
 
 [JsonSerializable(typeof(ControllerHub.SetAccelerationRequest))]
 [JsonSerializable(typeof(ControllerHub.SetSteeringRequest))]
+[JsonSerializable(typeof(ControllerHub.SetHornRequest))]
 public partial class ControllerHubJsonSerializerContext : JsonSerializerContext;
 
 public static class ControllerHubServiceCollectionExtensions

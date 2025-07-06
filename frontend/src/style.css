@@ -13,14 +13,16 @@ main {
   width: 100vw;
   height: 100vh;
   grid-template-columns: 1fr auto;
-  grid-template-rows: 1fr;
-  grid-template-areas: "center acceleration";
+  grid-template-rows: 1fr auto;
+  grid-template-areas:
+    "center acceleration"
+    "bottom bottom";
 
   .camera {
     justify-self: stretch;
     align-self: stretch;
     overflow: hidden;
-    grid-area: center-start / center-start / acceleration-end / acceleration-end;
+    grid-area: center-start / center-start / bottom-end / bottom-end;
 
     img {
       display: block;
@@ -46,7 +48,7 @@ main {
     padding: 0;
     justify-self: stretch;
     align-self: stretch;
-    grid-area: center-start / center-start / acceleration-end / acceleration-end;
+    grid-area: center-start / center-start / bottom-end / bottom-end;
     display: flex;
     flex-direction: column-reverse;
     justify-content: start;
@@ -86,7 +88,7 @@ main {
   }
 
   #acceleration {
-    grid-area: acceleration;
+    grid-area: acceleration-start / acceleration-start / bottom-end / bottom-end;
     align-self: center;
     justify-self: center;
     writing-mode: vertical-lr;
@@ -97,15 +99,35 @@ main {
     max-height: 5cm;
     display: none;
 
-    &:has(+ #input-mode input[value="mobile"]:checked) {
+    &:has(~ #input-mode input[value="mobile"]:checked) {
+      display: inline-block;
+    }
+  }
+
+  #horn {
+    grid-area: bottom;
+    align-self: end;
+    justify-self: start;
+    width: 5rem;
+    padding: 0;
+    margin: 0;
+    margin-block-end: 2rem;
+    text-align: center;
+    font-size: 150%;
+    border: none;
+    background: none;
+    user-select: none;
+    display: none;
+
+    &:has(~ #input-mode input[value="mobile"]:checked) {
       display: inline-block;
     }
   }
 
   #input-mode {
-    grid-area: acceleration;
+    grid-area: bottom;
     align-self: end;
-    justify-self: stretch;
+    justify-self: end;
     width: 5rem;
     margin-block-end: 2rem;
     text-align: center;

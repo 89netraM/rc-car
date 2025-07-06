@@ -24,6 +24,13 @@ public sealed class ControllerService : IDisposable
         set => steering.Value = double.Clamp(value, -1.0d, 1.0d);
     }
 
+    private readonly GpioPin horn;
+    public bool Horn
+    {
+        get => (bool)horn.Read();
+        set => horn.Write(value);
+    }
+
     public ControllerService(IOptions<ControllerOptions> options)
     {
         gpioController = new GpioController();
@@ -41,12 +48,14 @@ public sealed class ControllerService : IDisposable
             options.Value.Steering.PositivePin,
             options.Value.Steering.NegativePin
         );
+        horn = gpioController.OpenPin(options.Value.HornPin, PinMode.Output, PinValue.Low);
     }
 
     public void Dispose()
     {
         acceleration.Dispose();
         steering.Dispose();
+        horn.Dispose();
         gpioController.Dispose();
     }
 }
@@ -58,6 +67,9 @@ public class ControllerOptions
 
     [Required, ValidateObjectMembers]
     public required PinPairOptions Steering { get; set; }
+
+    [Required, Range(0, int.MaxValue)]
+    public int HornPin { get; set; }
 
     [Range(1, int.MaxValue)]
     public int Frequency { get; set; } = 100;

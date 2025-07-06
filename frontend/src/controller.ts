@@ -26,7 +26,7 @@ connection.start().catch((err: Error) =>{
 
 export async function sendAccelerationToController(acceleration: number): Promise<void> {
     try {
-        await connection.send("setAcceleration", { Acceleration: acceleration });
+        await connection.send("setAcceleration", { acceleration });
     } catch (e) {
         createAlert((e as Error)?.message ?? e);
     }
@@ -35,6 +35,14 @@ export async function sendAccelerationToController(acceleration: number): Promis
 export async function sendSteeringToController(steering: number): Promise<void> {
     try {
         await connection.send("setSteering", { steering });
+    } catch (e) {
+        createAlert((e as Error)?.message ?? e);
+    }
+}
+
+export async function sendHornToController(active: boolean): Promise<void> {
+    try {
+        await connection.send("setHorn", { active });
     } catch (e) {
         createAlert((e as Error)?.message ?? e);
     }
