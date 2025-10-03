@@ -1,5 +1,6 @@
 import { isGamepadInputEnabled, isKeyboardInputEnabled, isMobileInputEnabled } from "./inputMode";
 import { sendAccelerationToController } from "./controller";
+import { scaleGamepadAxis } from "./gamepad";
 
 const accelerationInputElement = document.getElementById("acceleration") as HTMLInputElement;
 accelerationInputElement.addEventListener("input", () => {
@@ -52,7 +53,7 @@ function readGamepads(): void {
 }
 function readGamepad(gamepad: Gamepad): boolean {
     const prevAcceleration = accelerationsByGamepad[gamepad.id];
-    const acceleration = gamepad.buttons[7].value - gamepad.buttons[6].value;
+    const acceleration = scaleGamepadAxis(gamepad.buttons[7].value - gamepad.buttons[6].value);
     if (Math.abs(prevAcceleration - acceleration) < 0.01) {
         return false;
     }

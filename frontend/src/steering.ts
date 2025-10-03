@@ -1,4 +1,6 @@
 import { sendSteeringToController } from "./controller";
+import { scaleGamepadAxis } from "./gamepad";
+import { scaleGyroInput } from "./gyro";
 import { isGamepadInputEnabled, isKeyboardInputEnabled, isMobileInputEnabled } from "./inputMode";
 
 const cameraImg = document.querySelector(".camera img") as HTMLImageElement;
@@ -18,7 +20,7 @@ window.addEventListener("deviceorientation", e => {
     angle = angle > 180 ? angle - 360 : angle;
     cameraImg.style.transform = `rotateZ(${-angle}deg)`;
 
-    const steering = Math.max(-45, Math.min(angle, 45)) / 45;
+    const steering = scaleGyroInput(Math.max(-45, Math.min(angle, 45)) / 45);
     if (prevSensorSteering != null && Math.abs(prevSensorSteering - steering) < 0.01) {
         return;
     }
@@ -63,7 +65,7 @@ function readGamepads(): void {
 }
 function readGamepad(gamepad: Gamepad): boolean {
     const prevSteering = steeringByGamepad[gamepad.id];
-    const steering = gamepad.axes[0];
+    const steering = scaleGamepadAxis(gamepad.axes[0]);
     if (Math.abs(prevSteering - steering) < 0.01) {
         return false;
     }
