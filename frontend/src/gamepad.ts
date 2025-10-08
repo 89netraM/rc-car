@@ -1,4 +1,4 @@
-const deadZone = 0.1;
+const deadZone = 0.25;
 const scale = 1.0 - deadZone;
 
 export function scaleGamepadAxis(value: number): number {
